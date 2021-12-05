@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.pythonPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+		"python.linting.pylamaEnabled": false,
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"code-runner.runInTerminal": true,
+		"code-runner.clearPreviousOutput": true,
+		"code-runner.executorMap": {
+			"python": "$pythonPath -u $fullFileName"
+		},
+		"code-runner.cwd": "$workspaceRoot"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"donjayamanne.python-environment-manager",
+			"ms-toolsai.jupyter",
+			"ms-toolsai.jupyter-keymap",
+			"ms-toolsai.jupyter-renderers",
+			"formulahendry.code-runner"
+		]
+	}
+}

@@ -1,6 +1,12 @@
 {
-	"python.pythonPath": "c:\\Users\\Bjorn\\git\\AdventOfCode\\AdventOfCode\\.venv\\Scripts\\python.exe",
+	"python.pythonPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
 	"python.linting.pylamaEnabled": false,
 	"python.linting.enabled": true,
-	"python.linting.pylintEnabled": true
+	"python.linting.pylintEnabled": true,
+	"code-runner.runInTerminal": true,
+	"code-runner.clearPreviousOutput": true,
+	"code-runner.executorMap": {
+		"python": "$pythonPath -u $fullFileName"
+	},
+	"code-runner.cwd": "$workspaceRoot"
 }
