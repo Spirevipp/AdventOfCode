@@ -4,7 +4,7 @@
 """
 import os
 
-print("Movement calculator is now running")
+print("--- Day 2: Dive! ---")
 inputFilePath = f"{os.getcwd()}\\Aoc-2021\\Day-2\\input.txt"
 # inputFile = open(inputFilePath, "rt", encoding="utf-8")
 

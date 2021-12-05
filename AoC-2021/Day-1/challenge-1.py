@@ -4,7 +4,7 @@
 """
 import os
 
-print("Sonar Sweep depth measurement increase finder is now running")
+print("--- Day 1: Sonar Sweep ---")
 inputFilePath = f"{os.getcwd()}\\Aoc-2021\\Day-1\\Challenge-1\\input.txt"
 inputFile = open(inputFilePath, "rt", encoding="utf-8")
 
