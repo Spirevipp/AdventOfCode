@@ -1,8 +1,9 @@
 package no.h598062.aoc2022.day2;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class RPCCalculator {
 	public static void main(String[] args) {
