@@ -66,6 +66,7 @@ public class NoSpaceLeftOnDevice {
 			biggersizes.sort(null);
 			System.out.println("total size of directory to delete is " + biggersizes.get(0));
 		}
+		root.printFolderTree(0);
 	}
 }
 
@@ -208,6 +209,26 @@ class Folder {
 		this.size           = s;
 		this.elements       = e;
 		this.nestedElements = ne;
+	}
+
+	public void printFolderTree(int depth) {
+		if (depth == 0) {
+			System.out.println(this.folderName + "  -  " + this.size);
+		} else {
+			System.out.println(("  ".repeat(depth-1)) + "  |- " + this.folderName + "  -  " + this.size);
+		}
+		if (!this.files.isEmpty()) {
+			for (Filex f : this.files) {
+				System.out.println(("  ".repeat(depth)) + "  -- " + f.getName() + "  -  " + f.getSize());
+			}
+		}
+		if (!this.childFolders.isEmpty()) {
+			for (Folder f : this.childFolders) {
+				f.printFolderTree(depth +1);
+			}
+		}
+
+
 	}
 }
 
