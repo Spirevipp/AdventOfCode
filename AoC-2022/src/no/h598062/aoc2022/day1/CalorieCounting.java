@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 // part 1 ans: 68802
-public class CaloriesCalculator {
+public class CalorieCounting {
 	public static void main(String[] args) {
 		String filepath = "./resources/input-day1.txt";
 		// try-with-resources

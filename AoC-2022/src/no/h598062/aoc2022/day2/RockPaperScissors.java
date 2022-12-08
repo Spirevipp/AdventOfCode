@@ -1,11 +1,8 @@
 package no.h598062.aoc2022.day2;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-public class RPCCalculator {
+public class RockPaperScissors {
 	public static void main(String[] args) {
 		String  filepath = "./resources/input-day2.txt";
 		boolean part1    = false;

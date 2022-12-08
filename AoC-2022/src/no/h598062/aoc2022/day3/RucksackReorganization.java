@@ -3,10 +3,9 @@ package no.h598062.aoc2022.day3;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 
-public class RuckSackSort {
+public class RucksackReorganization {
 	public static void main(String[] args) {
 		String filepath = "./resources/input-day3.txt";
 		// try-with-resources
