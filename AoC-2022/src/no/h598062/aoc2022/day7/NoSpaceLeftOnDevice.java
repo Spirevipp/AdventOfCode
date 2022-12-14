@@ -54,12 +54,12 @@ public class NoSpaceLeftOnDevice {
 		int currentAvailable = fssize - currentUsed;
 		if (currentAvailable < updateSize) {
 			int                amountToFree = updateSize - currentAvailable;
-			ArrayList<Folder>  bigger       = new ArrayList<>();
+			// ArrayList<Folder>  bigger       = new ArrayList<>();
 			ArrayList<Integer> biggersizes  = new ArrayList<>();
 			for (Folder f : folderList) {
 				int s = f.getSize();
 				if (s >= amountToFree) {
-					bigger.add(f);
+					// bigger.add(f);
 					biggersizes.add(s);
 				}
 			}
@@ -79,7 +79,6 @@ class Folder {
 	private final Folder parent;
 
 	private int size; // calculated size of all nested child elements
-	private int elements; // all direct child files or folders
 	private int nestedElements; // total of all child files and folders
 
 	public Folder(String path, String folderName, Folder parent) {
@@ -89,7 +88,6 @@ class Folder {
 		this.size           = 0;
 		this.childFolders   = new ArrayList<>();
 		this.files          = new ArrayList<>();
-		this.elements       = 0;
 		this.nestedElements = 0;
 	}
 
@@ -100,7 +98,6 @@ class Folder {
 		this.size           = 0;
 		this.childFolders   = new ArrayList<>();
 		this.files          = new ArrayList<>();
-		this.elements       = 0;
 		this.nestedElements = 0;
 	}
 
@@ -129,24 +126,8 @@ class Folder {
 		return path;
 	}
 
-	public String getFolderName() {
-		return folderName;
-	}
-
 	public int getSize() {
 		return size;
-	}
-
-	public ArrayList<Folder> getChildFolderList() {
-		return childFolders;
-	}
-
-	public ArrayList<Filex> getFileList() {
-		return files;
-	}
-
-	private int getElements() {
-		return this.elements;
 	}
 
 	private int getNestedElements() {
@@ -164,15 +145,13 @@ class Folder {
 
 	public void addFile(Filex file) {
 		this.files.add(file);
-		this.size += file.getSize();
-		this.elements += 1;
+		this.size += file.size();
 		this.nestedElements += 1;
 	}
 
 	public void addDir(Folder folder) {
 		this.childFolders.add(folder);
 		this.size += folder.getSize();
-		this.elements += 1;
 		this.nestedElements += 1 + folder.getNestedElements();
 	}
 
@@ -193,21 +172,17 @@ class Folder {
 
 	public void updateSize() {
 		int s  = 0;
-		int e  = 0;
 		int ne = 0;
 		for (Filex file : this.files) {
-			s += file.getSize();
-			e += 1;
+			s += file.size();
 			ne += 1;
 		}
 		for (Folder folder : this.childFolders) {
 			folder.updateSize();
 			s += folder.getSize();
-			e += 1;
 			ne += folder.getNestedElements();
 		}
 		this.size           = s;
-		this.elements       = e;
 		this.nestedElements = ne;
 	}
 
@@ -219,7 +194,7 @@ class Folder {
 		}
 		if (!this.files.isEmpty()) {
 			for (Filex f : this.files) {
-				System.out.println(("  ".repeat(depth)) + "  -- " + f.getName() + "  -  " + f.getSize());
+				System.out.println(("  ".repeat(depth)) + "  -- " + f.name() + "  -  " + f.size());
 			}
 		}
 		if (!this.childFolders.isEmpty()) {
@@ -227,25 +202,7 @@ class Folder {
 				f.printFolderTree(depth +1);
 			}
 		}
-
-
 	}
 }
 
-class Filex {
-	private final String name;
-	private final int    size;
-
-	public Filex(String name, int size) {
-		this.name = name;
-		this.size = size;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getSize() {
-		return size;
-	}
-}
+record Filex(String name, int size) {}

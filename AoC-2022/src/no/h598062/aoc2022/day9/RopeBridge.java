@@ -6,10 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+// inspirasjon til å oppdatere move kode
+// https://github.com/sanishchirayath1/advent-of-code/blob/master/2022/day9/readable.js
+
 public class RopeBridge {
 	public static void main(String[] args) {
-		String filepath = "./resources/input-day9.txt";
+		// String filepath = "./resources/input-day9.txt";
 		// String filepath = "./resources/input-day9-sample.txt";
+		String filepath = "./resources/input-day9-sample2.txt";
 
 		ArrayList<Move>   moves   = new ArrayList<>();
 		HashSet<Position> visited = new HashSet<>();
@@ -22,9 +26,9 @@ public class RopeBridge {
 		} catch (IOException e) {
 			System.out.println("Could not open file: " + filepath);
 		}
-		System.out.println(moves);
-		Rope rope = new Rope(0, 0);
-		// visited.add(rope.tail);
+		// System.out.println(moves);
+		Rope rope = new Rope(0, 0, 10);
+		visited.add(rope.head);
 		for (Move move : moves) {
 			rope.move(move, visited);
 		}
@@ -86,18 +90,24 @@ class Move {
 }
 
 class Rope {
-	Position head;
-	Position tail;
+	Position             head;
+	LinkedList<Position> tail;
 
 	int maxX;
 	int maxY;
-
 	int minX;
 	int minY;
 
-	public Rope(int x, int y) {
+	public Rope(int x, int y, int lenght) {
 		this.head = new Position(x, y);
-		this.tail = new Position(x, y);
+		this.tail = new LinkedList<>();
+		if (lenght < 3) {
+			this.tail.add(new Position(x, y));
+		} else {
+			for (int i = 0; i < lenght - 1; i++) {
+				this.tail.add(new Position(x, y));
+			}
+		}
 		this.maxX = 0;
 		this.maxY = 0;
 		this.minX = 0;
@@ -105,6 +115,7 @@ class Rope {
 	}
 
 	public void move(Move move, Set<Position> visited) {
+		System.out.println(move);
 		for (int i = 0; i < move.getSteps(); i++) {
 			Position previousHead = this.head;
 			switch (move.getDir()) {
@@ -114,11 +125,24 @@ class Rope {
 				case RIGHT -> this.head = new Position(this.head.x() + 1, this.head.y());
 				case NONE -> System.out.println("Error, got posistion NONE");
 			}
-			if (!isTailAdjacent()) {
-				visited.add(this.tail);
-				this.tail = previousHead;
-				visited.add(this.tail);
-				// System.out.println(move + " step " + (i+ 1));
+			Position prevTail = previousHead;
+			for (int j = 0; j < tail.size(); j++) {
+				Position t = tail.get(j);
+				if (!isTailAdjacent(j)) {
+					if (j == 0) {
+						this.tail.set(j, new Position(t.x()+t.deltaX(previousHead), t.y()+t.deltaY(previousHead)));
+					} else {
+						if (j == tail.size() - 1) {
+							visited.add(t);
+							visited.add(prevTail);
+						}
+						this.tail.set(j, new Position(t.x()+t.deltaX(prevTail), t.y()+t.deltaY(prevTail)));
+					}
+					prevTail = t;
+					// System.out.println(move + " step " + (i+ 1));
+				} else { // if this tail segment did not need to move, then the rest does not need to move
+					break;
+				}
 			}
 			if (this.head.y() > this.maxY) {
 				this.maxY = this.head.y();
@@ -132,20 +156,42 @@ class Rope {
 			if (this.head.x() < this.minX) {
 				this.minX = this.head.x();
 			}
-			// this.printBoard(visited);
+			this.printBoard(visited);
 		}
 	}
 
-	public boolean isTailAdjacent() {
-		return (this.tail.equals(this.head)) ||
-		       (this.tail.x() + 1 == this.head.x() && this.tail.y() == this.head.y()) ||
-		       (this.tail.x() - 1 == this.head.x() && this.tail.y() == this.head.y()) ||
-		       (this.tail.x() == this.head.x() && this.tail.y() + 1 == this.head.y()) ||
-		       (this.tail.x() == this.head.x() && this.tail.y() - 1 == this.head.y()) ||
-		       (this.tail.x() + 1 == this.head.x() && this.tail.y() + 1 == this.head.y()) ||
-		       (this.tail.x() + 1 == this.head.x() && this.tail.y() - 1 == this.head.y()) ||
-		       (this.tail.x() - 1 == this.head.x() && this.tail.y() + 1 == this.head.y()) ||
-		       (this.tail.x() - 1 == this.head.x() && this.tail.y() - 1 == this.head.y());
+	public boolean isTailAdjacent(int pos) {
+		boolean isAdjacent;
+		if (pos == 0) {
+			isAdjacent = (this.tail.get(pos).equals(this.head)) ||
+			             (this.tail.get(pos).x() + 1 == this.head.x() && this.tail.get(pos).y() == this.head.y()) ||
+			             (this.tail.get(pos).x() - 1 == this.head.x() && this.tail.get(pos).y() == this.head.y()) ||
+			             (this.tail.get(pos).x() == this.head.x() && this.tail.get(pos).y() + 1 == this.head.y()) ||
+			             (this.tail.get(pos).x() == this.head.x() && this.tail.get(pos).y() - 1 == this.head.y()) ||
+			             (this.tail.get(pos).x() + 1 == this.head.x() && this.tail.get(pos).y() + 1 == this.head.y()) ||
+			             (this.tail.get(pos).x() + 1 == this.head.x() && this.tail.get(pos).y() - 1 == this.head.y()) ||
+			             (this.tail.get(pos).x() - 1 == this.head.x() && this.tail.get(pos).y() + 1 == this.head.y()) ||
+			             (this.tail.get(pos).x() - 1 == this.head.x() && this.tail.get(pos).y() - 1 == this.head.y());
+		} else {
+			isAdjacent = (this.tail.get(pos).equals(this.tail.get(pos - 1))) ||
+			             (this.tail.get(pos).x() + 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() - 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() + 1 == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() - 1 == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() + 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() + 1 == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() + 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() - 1 == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() - 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() + 1 == this.tail.get(pos - 1).y()) ||
+			             (this.tail.get(pos).x() - 1 == this.tail.get(pos - 1).x() &&
+			              this.tail.get(pos).y() - 1 == this.tail.get(pos - 1).y());
+		}
+		return isAdjacent;
 	}
 
 	public void printBoard(Set<Position> visited) {
@@ -169,19 +215,18 @@ class Rope {
 			}
 			board.set(p.y() + my, sb1.toString());
 		}
-		if (this.head.y() == this.tail.y()) {
-			StringBuilder sb = new StringBuilder(board.get(this.tail.y() + my));
-			sb.setCharAt(this.tail.x() + mx, 'T');
-			sb.setCharAt(this.head.x() + mx, 'H');
-			board.set(this.tail.y() + my, sb.toString());
-		} else {
-			StringBuilder sb1 = new StringBuilder(board.get(this.tail.y() + my));
-			StringBuilder sb2 = new StringBuilder(board.get(this.head.y() + my));
-			sb1.setCharAt(this.tail.x() + mx, 'T');
-			sb2.setCharAt(this.head.x() + mx, 'H');
-			board.set(this.tail.y() + my, sb1.toString());
-			board.set(this.head.y() + my, sb2.toString());
+
+		StringBuilder sh = new StringBuilder(board.get(this.head.y() + my));
+		sh.setCharAt(this.head.x() + mx, 'H');
+		board.set(this.head.y() + my, sh.toString());
+
+		for (int i = 0; i < tail.size(); i++) {
+			Position      t  = tail.get(i);
+			StringBuilder st = new StringBuilder(board.get(t.y() + my));
+			st.setCharAt(t.x() + mx, ((char) (i + '0')));
+			board.set(t.y() + my, st.toString());
 		}
+
 		for (int i = board.size() - 1; i >= 0; i--) {
 			System.out.println(board.get(i));
 		}
@@ -205,5 +250,13 @@ record Position(int x, int y) {
 	@Override
 	public String toString() {
 		return "{" + "x=" + x + ", y=" + y + '}';
+	}
+
+	public int deltaX(Position p) {
+		return p.x - x;
+	}
+
+	public int deltaY(Position p) {
+		return p.y - y;
 	}
 }
